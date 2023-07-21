@@ -1,5 +1,4 @@
 import tensorflow as tf
-import matplotlib.pyplot as plt
 
 mnist = tf.keras.datasets.mnist
 
@@ -11,20 +10,23 @@ train_images = train_images.astype("float32") / 255
 test_images = test_images.reshape((10000, 28 * 28))
 test_images = test_images.astype("float32") / 255
 
-# # 2 fully connected layers with the last being a 10-way softmax classification layer
-# # returns 10 scores summing to 1 with each representing the likely hood of a given number
+# 2 fully connected layers with the last being a 10-way softmax classification layer
+# First layer has an output size of 512 values
+# returns 10 scores betweeon 0 and 1 with each representing the likely hood of a given number
 
 model = tf.keras.Sequential([
-    tf.keras.layers.Dense(512, activation="relu"),
-    tf.keras.layers.Dense(10, activation="softmax")
+    tf.keras.layers.Dense(512, "relu"),
+    tf.keras.layers.Dense(10, "softmax")
 ])
 
 model.compile(optimizer="rmsprop",
               loss = "sparse_categorical_crossentropy",
-              metrics="accuracy")
+              metrics=["accuracy"])
 
-model.fit(train_images, train_labels, epochs=5, batch_size=1)
+model.fit(train_images, train_labels, epochs=5, batch_size=128)
 
-predictions = model.predict(test_images[:10])
+predictions = model.predict(test_images[:1])
+print(test_labels[0])
+print(predictions[0])
 
 test_loss, test_acc = model.evaluate(test_images, test_labels)
